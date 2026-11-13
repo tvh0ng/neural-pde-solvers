@@ -1,0 +1,22 @@
+# Viscous Burgers' equation  u_t + u u_x = nu u_xx  on [-1,1] x [0,1],  nu = 0.01/pi
+problem:
+  name: burgers1d
+  params: {nu: 0.0031830988618379067, n_ic: 200, n_bc: 200}
+network:
+  width: 64
+  depth: 4
+  activation: tanh
+  normalize_inputs: true
+weights: {pde: 1.0, ic: 20.0, bc: 10.0}
+trainer:
+  epochs: 10000
+  lr: 1.0e-3
+  n_collocation: 10000
+  resample_every: 1
+  scheduler: step
+  scheduler_kwargs: {step_size: 2000, gamma: 0.5}
+  lbfgs_iters: 2000      # L-BFGS refinement — sharpens the shock considerably
+  log_every: 1000
+eval_grid: [256, 101]    # (n_x, n_t)
+seed: 42
+device: auto

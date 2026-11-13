@@ -1,0 +1,22 @@
+# 2D Poisson equation  Δu = -2π² sin(πx) sin(πy)  on [0,1]², u = 0 on the boundary
+problem:
+  name: poisson2d
+  params: {n_bc: 400}
+network:
+  width: 64
+  depth: 6          # input layer + 5 residual hidden layers
+  activation: tanh
+  residual: true
+weights: {pde: 1.0, bc: 10.0}
+trainer:
+  epochs: 8000
+  lr: 1.0e-3
+  n_collocation: 5000
+  resample_every: 1
+  scheduler: plateau
+  scheduler_kwargs: {factor: 0.5, patience: 500, min_lr: 1.0e-6}
+  lbfgs_iters: 0
+  log_every: 1000
+eval_grid: 101
+seed: 42
+device: auto

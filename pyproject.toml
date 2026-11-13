@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neural-pde-solvers"
+version = "0.2.0"
+description = "Physics-informed neural networks (PyTorch) and deep-learning surrogate models (Keras) — DLARC, Sejong University"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Truong Van Hong" }]
+keywords = ["PINN", "physics-informed neural networks", "surrogate model", "deep learning", "PDE"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "numpy>=1.24",
+    "matplotlib>=3.7",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+pinn = ["torch>=2.1"]
+surrogate = ["tensorflow>=2.16", "pandas>=2.0", "scikit-learn>=1.3", "joblib>=1.3"]
+dev = ["pytest>=8", "ruff>=0.6", "nbformat>=5.9", "nbconvert>=7", "ipykernel"]
+all = ["neural-pde-solvers[pinn,surrogate,dev]"]
+
+[project.scripts]
+pinn-run = "neural_pde_solvers.pinn.cli:main"
+surrogate-train = "neural_pde_solvers.surrogate.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "NPY", "SIM"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"*.ipynb" = ["E402", "F401"]  # shared setup cell imports more than each notebook uses
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = ["slow: long-running convergence tests (deselect with -m 'not slow')"]

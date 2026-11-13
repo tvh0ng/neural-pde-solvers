@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ruff
+      - run: ruff check .
+      - run: ruff format --check src tests scripts
+
+  test-pinn:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - run: pip install -e ".[pinn,dev]"
+      - run: pytest tests/test_pinn.py
+      - name: Execute PINN notebooks (short runs)
+        env:
+          PINN_QUICK: "1"
+        run: |
+          for nb in notebooks/pinn/*.ipynb; do
+            jupyter nbconvert --to notebook --execute --output-dir /tmp/nb "$nb"
+          done
+
+  test-surrogate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -e ".[surrogate,dev]"
+      - run: pytest tests/test_surrogate.py
+      - name: Execute surrogate notebook (short run)
+        env:
+          SURROGATE_QUICK: "1"
+        working-directory: notebooks/surrogate
+        run: jupyter nbconvert --to notebook --execute --output-dir /tmp/nb train_surrogate.ipynb

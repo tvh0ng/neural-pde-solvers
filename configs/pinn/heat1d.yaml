@@ -1,0 +1,20 @@
+# Steady 1D heat equation  u'' = -sin(pi x),  u(0) = u(1) = 0
+problem:
+  name: heat1d
+network:
+  width: 32
+  depth: 3
+  activation: tanh
+weights: {pde: 1.0, bc: 10.0}
+trainer:
+  epochs: 5000
+  lr: 1.0e-3
+  n_collocation: 100
+  resample_every: 1
+  scheduler: plateau
+  scheduler_kwargs: {factor: 0.5, patience: 500, min_lr: 1.0e-6}
+  lbfgs_iters: 0
+  log_every: 500
+eval_grid: 201
+seed: 42
+device: auto

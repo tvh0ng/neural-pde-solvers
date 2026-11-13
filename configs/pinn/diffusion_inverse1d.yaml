@@ -1,0 +1,21 @@
+# Inverse problem: identify D in u_t = D u_xx from 200 noisy measurements (true D = 0.1)
+problem:
+  name: diffusion_inverse1d
+  params: {D_true: 0.1, D_init: 0.5, n_data: 200, noise: 0.02, n_ic: 200, n_bc: 200, seed: 42}
+network:
+  width: 64
+  depth: 4
+  activation: tanh
+weights: {pde: 1.0, data: 10.0, ic: 10.0, bc: 10.0}
+trainer:
+  epochs: 15000
+  lr: 1.0e-3
+  n_collocation: 5000
+  resample_every: 1
+  scheduler: step
+  scheduler_kwargs: {step_size: 3000, gamma: 0.5}
+  lbfgs_iters: 0
+  log_every: 1500
+eval_grid: 101
+seed: 42
+device: auto

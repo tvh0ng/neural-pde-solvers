@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+.DS_Store
+
+# Data & experiment outputs (kept out of version control)
+data/*
+!data/README.md
+results/
+*.keras
+*.h5
+*.pt
+*.joblib

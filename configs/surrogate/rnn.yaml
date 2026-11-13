@@ -1,0 +1,26 @@
+name: RNN_cm
+model: rnn
+data:
+  path: data/Out_ML_cm.csv        # header-less CSV, see data/README.md
+  n_samples: 30000
+  input_cols: [0, 5]          # [start, stop) column range
+  output_cols: [6, 206]
+  test_ratio: 0.2
+  val_ratio: 0.1          # carved from the training block; used for early stopping
+  shuffle: false
+  scaler: minmax
+model_params:
+  units: [128, 128, 64, 64]
+  dense_units: [32]
+  dropout_rate: 0.25
+training:
+  epochs: 1000
+  batch_size: 128
+  learning_rate: 1.0e-3
+  patience_es: 50
+  patience_lr: 20
+  lr_factor: 0.5
+  min_lr: 1.0e-6
+  mixed_precision: auto   # mixed_float16 only when a GPU is available
+output_dir: results/surrogate/rnn
+seed: 42
